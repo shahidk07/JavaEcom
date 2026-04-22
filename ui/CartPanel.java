@@ -13,25 +13,19 @@ public class CartPanel extends JPanel {
     public CartPanel(Cart cart) {
         this.cart = cart;
 
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10,10));
+        setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        area = new JTextArea(8, 30);
+        area = new JTextArea(5, 30);
         area.setEditable(false);
 
         JScrollPane scroll = new JScrollPane(area);
 
-        JPanel bottomPanel = new JPanel();
-
-        JButton refreshBtn = new JButton("Refresh");
         JButton removeBtn = new JButton("Remove Last");
         JButton checkoutBtn = new JButton("Checkout");
 
         totalLabel = new JLabel("Total: ₹0");
 
-        // 🔄 Refresh cart
-        refreshBtn.addActionListener(e -> updateCart());
-
-        // ❌ Remove last item
         removeBtn.addActionListener(e -> {
             int size = cart.getItems().size();
             if(size > 0) {
@@ -40,28 +34,26 @@ public class CartPanel extends JPanel {
             }
         });
 
-        // 💳 Checkout
         checkoutBtn.addActionListener(e -> {
-            double total = cart.getTotal();
-            JOptionPane.showMessageDialog(this, "Order placed! ₹" + total);
+            JOptionPane.showMessageDialog(this, "Order placed! ₹" + cart.getTotal());
             cart.clearCart();
             updateCart();
         });
 
-        bottomPanel.add(refreshBtn);
-        bottomPanel.add(removeBtn);
-        bottomPanel.add(checkoutBtn);
-        bottomPanel.add(totalLabel);
+        JPanel bottom = new JPanel();
+        bottom.add(removeBtn);
+        bottom.add(checkoutBtn);
+        bottom.add(totalLabel);
 
         add(scroll, BorderLayout.CENTER);
-        add(bottomPanel, BorderLayout.SOUTH);
+        add(bottom, BorderLayout.SOUTH);
     }
 
-    private void updateCart() {
+    public void updateCart() {
         StringBuilder sb = new StringBuilder();
 
         for(Product p : cart.getItems()) {
-            sb.append(p.toString()).append("\n");
+            sb.append(p.getName()).append(" - ₹").append(p.getPrice()).append("\n");
         }
 
         area.setText(sb.toString());
